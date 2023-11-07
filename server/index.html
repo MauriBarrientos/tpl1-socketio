@@ -38,23 +38,17 @@
       let joinButton = document.getElementById('join');
       let username;
     
+      //Evento para unirse al chat con el username ingresado
       joinButton.addEventListener('click', () => {
         username = usernameInput.value;
         if (username) {
           userForm.style.display = 'none';
           messages.style.display = 'block';
-          console.log('Joined as: ' + username); // Agrega este log para depuración
+          console.log('Joined as: ' + username);
         }
       });
     
-      form.addEventListener('submit', (e) => {
-        e.preventDefault();
-        if (input.value && username) {
-          socket.emit('chat message', { username: username, message: input.value });
-          input.value = '';
-        }
-      });
-    
+      //Evento para mostrar los mensajes
       socket.on('chat message', (mensajesExistentes) => {
         messages.innerHTML = '';
         mensajesExistentes.forEach((msg) => {
@@ -64,17 +58,19 @@
         });
       });
     
+      //Evento para enviar un mensaje
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        if (input.value && username) {
+          socket.emit('chat message', { username: username, message: input.value });
+          input.value = '';
+        }
+      });
+
+      //Evento para mostrar el estado de escritura
       let typing = false;
       let typingTimeout;
     
-      input.addEventListener('keydown', (e) => {
-        if (e.key !== 'Enter') {
-          clearTimeout(typingTimeout);
-          typingTimeout = setTimeout(() => {
-            socket.emit('stopped typing', username);
-          }, 1000);
-        }
-      });
     
       input.addEventListener('keydown', (e) => {
         if (e.key !== 'Enter') {
